@@ -1,3 +1,7 @@
+## Push an esisting repository to github
+
+https://www.theserverside.com/video/How-to-use-the-git-remote-add-origin-command-to-push-remotely
+
 ## create a new repository on the command line
 
 echo "# fcmhtmljs" >> README.md
