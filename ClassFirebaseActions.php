@@ -1,7 +1,7 @@
 <?php
 // regexp to search all methods ^(?!(.*)\}\/)(.*)function\s+([^\(\r\n\=]+)\(
 !defined('DS') or define('DS',DIRECTORY_SEPARATOR);
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
@@ -295,6 +295,38 @@ class ClassFirebaseActions{
 		}//if($unsubscribeFromTopic)
 		//{"satus":"Success","message":"Subscribed To Topic testTopic","fcmResponse":{"testTopic":{"evqQykzO0YGSLRSOUneWHb:APA91bG4m4zDCQQ63ZV0ya2bIYzM9YXzp--YqiU4cw4lcA6HgpEH_r4sAmODdAJ03TXr0lJQ0E-ULp3E2UBghasvMK8S3MT8H3LyrfnlhbePS5rzY3JHpYU":"OK","fC-ZORFxwbfJFNfLLVK8sT:APA91bFydPiuwLqJ45zo3Tj_aWFHCZNMZaFcu7oIhfdf3aA8kEa1dCGT5aV-L52a1kn3eOfv7XhuBftVqPTmP-rRIWKo9mM-3QYxOTqNY809A8_JHZu9V2w":"OK"}}}
 	}//public function subscribe2Topic($topicName,$fcmTokens)
+	public function sendMessage2Token($topicMessageObj/*{token:token,messageBody:messageBody,title:title}*/)
+	{
+		
+		$messaging = $this->getMessagingObj();
+		
+		// Example usage
+		$title = $topicMessageObj->title;//"Hello";
+		$body = $topicMessageObj->messageBody;//"This is a test notification!";
+		$token = $topicMessageObj->token;
+
+		// Create a CloudMessage object
+		$message = CloudMessage::withTarget(
+			'token', // Target type: 'topic', 'token', or 'condition'
+			$token   // Target value (e.g., topic name or device token)
+		)->withNotification(
+			Notification::create($title, $body)
+		)->withData([
+			'key' => 'value' // Optional custom data
+		]);
+
+		// 4. Send the message
+		try {
+			$response = $messaging->send($message);
+			//echo "Message sent successfully!";
+			die(json_encode(['status' => 'Success', 'message' => 'Message sent to token ' . $token ,'fcmResponse' => $response]));
+		} catch (\Kreait\Firebase\Exception\MessagingException $e) {
+			//echo "Error: " . $e->getMessage();
+			die(json_encode(['status' => 'Error', 'message' => 'Failed sending message to token : ' . 
+																$token . ", reason : " . $e->getMessage() /* ,
+																'fcmResponse' => $response*/] ));
+		}
+	}//public function sendMessage2Token($topicMessageObj/*{topic:topic,messageBody:messageBody,title:title}*/)
 	public function sendMessage2Topic($topicMessageObj/*{topic:topic,messageBody:messageBody,title:title}*/)
 	{
 		

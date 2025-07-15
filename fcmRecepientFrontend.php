@@ -1,6 +1,6 @@
 <?php
 /*
-//http://localhost/pjtsreehp/easelex/OSOLMVC/tests/firebase/adv/fcmRecepientFrontend.php
+//http://localhost/pjtsreehp/easelex/OSOLMVC/tests/firebase/github/fcmhtmljs/fcmRecepientFrontend.php
 https://modestoffers.com/Demo2025/firebase/adv/fcmRecepientFrontend.php#!
 C:\projects\easelex\OSOLMVC\tests\firebase
 Features to add
@@ -40,6 +40,19 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] !=="")
 	$tokenAlreadyAdded =  false;
 	switch($action)
 	{
+		case "sendMessage2Token":
+		/*
+		{token:token,messageBody:messageBody,title:title}
+		- create a class ClassFirebaseActions : done
+		- add html for a text and submit link
+		- add js code to submit
+		- send message to token with class
+		- send JSON reponse with {status:,message:,fcmResponse:}
+		*/
+			$topicMessageObj = $jsonDataObj;
+			$clsFirebaseActions = ClassFirebaseActions::getInstance();
+			$clsFirebaseActions->sendMessage2Token($topicMessageObj);
+			break;
 		case "sendMessage2Topic":
 		/*
 		{topic:topic,messageBody:messageBody,title:title}
@@ -222,6 +235,31 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] !=="")
 			<a class="btn" id="sendToken2ServerLink" href="javascript:clsFCMInst.sendToken2Server()" >
 				Send FCM Token To Server
 			</a>
+		  </div>
+        </li>
+		
+        <li>
+          <div id="sendMessage2TokenTab" class="collapsible-header disabled"><i class="material-icons">devices</i>Send Message to Token</div>
+          <div class="collapsible-body">
+			<span id="sendMessage2TopicDescription" >
+				Firebase cloud Messaging could send message to a particular device.  FCM Token of the machines/browsers/app must be sent along with title and message. 
+			</span>
+				<div  id="enterTokenDiv" >
+					Enter Token 
+						<input type="text" id="txtToken2SendMessage"  placeholder="Enter Token  here..."  />
+				</div>
+					<div class="input-field col s12">
+			
+						Enter Text for  Message 
+						<input type="text" id="txtTitle4TokenMessage"  placeholder="Enter Token Mesage Title here..."  />
+			 
+					</div>
+					<div class="input-field col s12">
+						<textarea id="messageBody4Token" placeholder="Hi , this is message for selected Token"></textarea>
+					</div>
+					<a class="btn" id="sendMessage2TokenLink" href="javascript:clsFCMInst.sendMessage2Token()">
+						Send 
+					</a>
 		  </div>
         </li>
         <li>

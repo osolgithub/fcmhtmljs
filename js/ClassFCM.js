@@ -74,7 +74,10 @@ class ClassFCM{
 		let sendToken2ServerDescription = document.getElementById("sendToken2ServerDescription");
 		sendToken2ServerDescription.innerText = "FCM Token Sent to Server and Saved Already";
 		let subscribeUnSubscribeTopicTab = document.getElementById("subscribeUnSubscribeTopicTab");
-		subscribeUnSubscribeTopicTab.classList.remove('disabled');
+		subscribeUnSubscribeTopicTab.classList.remove('disabled');		
+		
+		let sendMessage2TokenTab = document.getElementById("sendMessage2TokenTab");
+		sendMessage2TokenTab.classList.remove('disabled');
 	}//hideGetFCMTokenLink(){
 	alterSubscribeUnSubscribeTopicDescription(message)
 	{
@@ -84,6 +87,10 @@ class ClassFCM{
 		let topic = txtTopic2Subscribe.value;
 		let subscribeUnSubscribeTopicDescription = document.getElementById("subscribeUnSubscribeTopicDescription");
 		subscribeUnSubscribeTopicDescription.innerHTML = message;//`Topic ${topic} is subscribed`;
+		
+		
+		console.log("Enabled sendMessage2TokenTab");
+		
 		this.setSendMessage2TopicTab();
 	}//alterSubscribeUnSubscribeTopicDescription()
 	setSendMessage2TopicTab()
@@ -115,6 +122,30 @@ class ClassFCM{
 		
 
 	}//setSendMessage2TopicTab()
+	sendMessage2Token(){
+		const tokenElement = document.getElementById('txtToken2SendMessage');
+		const messageBodyElement = document.getElementById('messageBody4Token');
+		const titleElement = document.getElementById('txtTitle4TokenMessage');
+		let messageBody = messageBodyElement.value;
+		let title = titleElement.value;
+		let token = tokenElement.value;
+		this.openAJAXModal();
+		fetch('?action=sendMessage2Token', {
+			  method: 'POST',
+			  headers: { 'Content-Type': 'application/json' },
+			  body: JSON.stringify({token:token, messageBody:messageBody,title:title })
+			})
+			.then(res => res.json())
+			.then(data => 
+			{
+				if(data.status == "Success")
+				{
+					console.log('Message sent to token!!!,data is ' , data);
+					this.closeAJAXModal(data.message);
+				}//if(data.status == "Success")
+			})
+			.catch(err => console.error('Token send Failed, Error:', err));
+	}//sendMessage2Token(){
 	sendMessage2Topic(){
 		const selectElement = document.getElementById('sltChooseTopic');
 		const messageBodyElement = document.getElementById('messageBody4Topic');
