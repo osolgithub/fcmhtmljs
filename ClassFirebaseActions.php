@@ -7,8 +7,7 @@ use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
 class ClassFirebaseActions{	
 	private static $inst = null;
-	//private $serviceAccountPath = __DIR__ . '/easelex-1b2ef-firebase-adminsdk-fbsvc-dcb520fb54.json';
-	private $serviceAccountPath = __DIR__ . '/easelexFCM.json';
+	private $serviceAccountPath = __DIR__ . '/FCMCrredentials.json';
 	public static function getInstance()
 	{
 		if(self::$inst == null)
@@ -20,7 +19,6 @@ class ClassFirebaseActions{
 	private function getMessagingObj()
 	{
 		
-		//$serviceAccountPath = __DIR__ . '/easelex-1b2ef-firebase-adminsdk-fbsvc-dcb520fb54.json';
 		$factory = (new Factory)->withServiceAccount($this->serviceAccountPath);
 		$messaging = $factory->createMessaging();
 		return $messaging;
