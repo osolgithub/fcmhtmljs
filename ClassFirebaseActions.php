@@ -181,6 +181,37 @@ class ClassFirebaseActions{
 		//die("savedTopicSubscriptions<pre>".print_r($savedTopicSubscriptions,true)."</pre>");
 		return $savedTopicSubscriptions;
 	}//	private function getRearrangedTopicsubscriptions2Save($topic2SubscribeObj/*{topic2Subscribe:topic2Subscribe,checkedDevices:[{browser,host}]}*/)
+	public function getTopicsSubscribed($fcmToken)
+	{
+		/*
+		https://stackoverflow.com/a/37989087
+		https://iid.googleapis.com/iid/info/<TOKEN>?details=true
+		Content-Type:application/json
+		Authorization:key=AAA....i1nM:APA9.....81gTPXCE55....JLPEG0wZobG_ile8lI35JTzHYE5MC..BmDD_Cxj5OxB1Yh....Rs5lo3UwLNL9h-WcocGV....b5bYWNI55kzNsrHK-7GljUDtMn 
+		*/
+		//$serverKey = "BOKCHMGJp-tyWrfGRKn_n-bUeobYwF3huJR4YjGlWCEDelW-x8zRX2XCgj8bjtsBKvW41KWR05aLAU3awY7Bp7I";
+		$serverKey = "AIzaSyCVRm6XUbfFpkg0q-O3UI18VrSHnziGpqY";//Android
+		$serverKey = "AIzaSyAsI9zxp6MvkMwRpnctpHc3gnwz6Eq4UQw";//Bowser
+		$url = 'https://iid.googleapis.com/iid/info/' . $fcmToken . '?details=true';
+		  $headers = [
+		   'Authorization: key=' . $serverKey,
+		   'Content-Type: application/json',
+			'access_token_auth: true'
+		   ];
+		  $ch = curl_init();
+		  curl_setopt($ch, CURLOPT_URL, $url);
+		  curl_setopt($ch, CURLOPT_POST, true);
+		  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		  //curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['message' => $message]));
+		  $response = curl_exec($ch);
+		   if ($response === false) {
+		   throw new Exception('Curl error: ' . curl_error($ch));
+		   }
+		  curl_close($ch);
+		  die($response);
+		  return json_decode($response, true);
+	}//public function getTopicsSubscribed($fcmToken)
 	public function unsubscribeFromTopic($topic2SubscribeObj/*{topic2Subscribe:topic2Subscribe,checkedDevices:[{browser,host}]}*/)
 	{
 		$rearrangedTopicSubscriptions2Save = $this->getRearrangedTopicsubscriptions2Save($topic2SubscribeObj,"unsubscribe");
@@ -301,13 +332,14 @@ class ClassFirebaseActions{
 		$messaging = $this->getMessagingObj();
 		
 		// Example usage
+		$target2SendMessage = $topicMessageObj->target2SendMessage;		
 		$title = $topicMessageObj->title;//"Hello";
 		$body = $topicMessageObj->messageBody;//"This is a test notification!";
 		$token = $topicMessageObj->token;
 
 		// Create a CloudMessage object
 		$message = CloudMessage::withTarget(
-			'token', // Target type: 'topic', 'token', or 'condition'
+			$target2SendMessage, // Target type: 'topic', 'token', or 'condition'
 			$token   // Target value (e.g., topic name or device token)
 		)->withNotification(
 			Notification::create($title, $body)
@@ -327,6 +359,9 @@ class ClassFirebaseActions{
 																'fcmResponse' => $response*/] ));
 		}
 	}//public function sendMessage2Token($topicMessageObj/*{topic:topic,messageBody:messageBody,title:title}*/)
+	public function addToken2Topic($topicMessageObj/*{appName, userId, fcmToken}*/)
+	{
+	}//public function addToken2Topic($topicMessageObj/*{appName, userId, fcmToken}*/)
 	public function sendMessage2Topic($topicMessageObj/*{topic:topic,messageBody:messageBody,title:title}*/)
 	{
 		

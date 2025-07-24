@@ -76,8 +76,8 @@ class ClassFCM{
 		let subscribeUnSubscribeTopicTab = document.getElementById("subscribeUnSubscribeTopicTab");
 		subscribeUnSubscribeTopicTab.classList.remove('disabled');		
 		
-		let sendMessage2TokenTab = document.getElementById("sendMessage2TokenTab");
-		sendMessage2TokenTab.classList.remove('disabled');
+		/* let sendMessage2TokenTab = document.getElementById("sendMessage2TokenTab");
+		sendMessage2TokenTab.classList.remove('disabled'); */
 	}//hideGetFCMTokenLink(){
 	alterSubscribeUnSubscribeTopicDescription(message)
 	{
@@ -122,10 +122,35 @@ class ClassFCM{
 		
 
 	}//setSendMessage2TopicTab()
+	addToken2Topic(){
+		/*
+		document.querySelector('input[name="deviceType2Add2Topic"]:checked').value;
+		$('input[name="deviceType2Add2Topic"]:checked').val();
+		{appName:'My android App Name', deviceName, token} or 
+		{host:host, browser:browser,fcmToken:fcmTokenValue } as in sendToken2Server()
+		
+		*/
+		const deviceType2Add2TopicElement = document.querySelector('input[name="deviceType2Add2Topic"]:checked');		
+		const tokenElement = document.getElementById('txtToken2Add2Topic');
+		const appNameElement = document.getElementById('txtAppName2Add2Topic');
+		const deviceNameElement = document.getElementById('txtdeviceName2Add2Topic');
+		let deviceType2Add2Topic = deviceType2Add2TopicElement.value;
+		let token = tokenElement.value;		
+		let appName = appNameElement.value;
+		let deviceName = deviceNameElement.value;
+		//if(deviceType2Add2Topic == "Browser")
+		{
+			this.sendToken2Server({host:appName, browser:deviceName,fcmToken:token });
+			return;
+		}
+		
+	}//addToken2Topic()
 	sendMessage2Token(){
+		const target2SendMessageElement = document.querySelector('input[name="target2SendMessage"]:checked');	
 		const tokenElement = document.getElementById('txtToken2SendMessage');
 		const messageBodyElement = document.getElementById('messageBody4Token');
 		const titleElement = document.getElementById('txtTitle4TokenMessage');
+		let target2SendMessage = target2SendMessageElement.value;
 		let messageBody = messageBodyElement.value;
 		let title = titleElement.value;
 		let token = tokenElement.value;
@@ -133,7 +158,7 @@ class ClassFCM{
 		fetch('?action=sendMessage2Token', {
 			  method: 'POST',
 			  headers: { 'Content-Type': 'application/json' },
-			  body: JSON.stringify({token:token, messageBody:messageBody,title:title })
+			  body: JSON.stringify({target2SendMessage:target2SendMessage,token:token, messageBody:messageBody,title:title })
 			})
 			.then(res => res.json())
 			.then(data => 
@@ -221,16 +246,28 @@ class ClassFCM{
 	}//requestNotificationPermission()
 	sendToken2Server()
 	{
-		let host = document.location.host;//https://stackoverflow.com/a/19550497
-		let browser = this.detectBrowser();
-		let fcmTokenValue = getFCMTokenValue();
+		let host,browser,fcmTokenValue
+		let json2Server =  arguments[0];//{host:host, browser:browser,fcmToken:fcmTokenValue }
+		if(typeof json2Server == 'undefined')// not an external call
+		{
+			host = document.location.host;//https://stackoverflow.com/a/19550497
+			browser = this.detectBrowser();
+			fcmTokenValue = getFCMTokenValue();
+			json2Server = {host:host, browser:browser,fcmToken:fcmTokenValue };
+		}
+		else //if(typeof arguments[0] == 'undefined')
+		{
+			host = json2Server.host;
+			browser = json2Server.browser;
+			fcmTokenValue = json2Server.fcmTokenValue;
+		}//if(typeof arguments[0] == 'undefined')
 		console.log("Your browser is: " + browser);
 		console.log("Your fcmToken is: " + fcmTokenValue);
 		this.openAJAXModal();
 		fetch('?action=saveToken', {
 			  method: 'POST',
 			  headers: { 'Content-Type': 'application/json' },
-			  body: JSON.stringify({host:host, browser:browser,fcmToken:fcmTokenValue })
+			  body: JSON.stringify(json2Server)
 			})
 			.then(res => res.json())
 			.then(data => 

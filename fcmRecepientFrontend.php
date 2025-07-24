@@ -40,6 +40,12 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] !=="")
 	$tokenAlreadyAdded =  false;
 	switch($action)
 	{
+		case "getTopicsSubscribed":
+			//http://localhost/pjtsreehp/easelex/OSOLMVC/tests/firebase/github/fcmhtmljs/fcmRecepientFrontend.php?action=getTopicsSubscribed&fcmToken=eQgFcWi4T5KvcoIbM7vT-t:APA91bFkXDPI8fN3t5CInkCCqX-NIjLJGMKUK_kahC9loC8c4SS1Wi96X6415JDzuy3sfMdOzbYY6GnnaTBrHven2ZfUwxygLrbtw3i4UsAvdbvQJaqrFvo
+			$fcmToken = $_REQUEST['fcmToken'];
+			$clsFirebaseActions = ClassFirebaseActions::getInstance();
+			$response = $clsFirebaseActions->getTopicsSubscribed($fcmToken);
+			break;
 		case "sendMessage2Token":
 		/*
 		{token:token,messageBody:messageBody,title:title}
@@ -203,6 +209,83 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] !=="")
   
       <h5>Firebase Cloud Messaging</h5>
       <ul class="collapsible">
+		
+        <li>
+          <div id="sendMessage2TokenTab" class="collapsible-header "><i class="material-icons">devices</i>Send Message</div>
+          <div class="collapsible-body">
+			<span id="sendMessage2TopicDescription" >
+				Firebase cloud Messaging could send message to a particular device.  FCM Token of the machines/browsers/app must be sent along with title and message. 
+			</span>
+			
+					<p>
+					  <label>
+						<input name="target2SendMessage" type="radio" value="token" checked />
+						<span>Token</span>
+					  </label>
+					  <label>
+						<input name="target2SendMessage" type="radio" value="topic" />
+						<span>Topic</span>
+					  </label>
+					</p>
+				<div  id="enterTokenDiv" >
+					Enter Token / Topic
+						<input type="text" id="txtToken2SendMessage"  placeholder="Enter Token  here..."  />
+				</div>
+					<div class="input-field col s12">
+			
+						Enter Text for  Message 
+						<input type="text" id="txtTitle4TokenMessage"  placeholder="Enter Token Mesage Title here..."  />
+			 
+					</div>
+					<div class="input-field col s12">
+						<textarea id="messageBody4Token" placeholder="Hi , this is message for selected Token"></textarea>
+					</div>
+					<a class="btn" id="sendMessage2TokenLink" href="javascript:clsFCMInst.sendMessage2Token()">
+						Send 
+					</a>
+		  </div>
+        </li>
+		
+        <li>
+          <div id="addToken2TopicTab" class="collapsible-header "><i class="material-icons">devices</i>Save Other Token</div>
+		  <!-- host, browser, token | appTokens.json :  appName, deviceName, token -->
+          <div class="collapsible-body">
+			<span id="addToken2TopicTabDescription" >
+				Firebase cloud Messaging could send message to a particular device.  FCM Token of the machines/browsers/app must be sent along with title and message. 
+			</span>
+					<p>
+					  <label>
+						<input name="deviceType2Add2Topic" type="radio" value="Android" checked />
+						<span>Android</span>
+					  </label>
+					  <label>
+						<input name="deviceType2Add2Topic" type="radio" value="Browser" />
+						<span>Browser</span>
+					  </label>
+					</p>
+			
+					<div id="txtTopic2Add2TopicTabDiv" class="input-field col s12">
+					Enter Topic
+						<input type="text" id="txtTopic2Add2Topic"  placeholder="Enter Topic  here..."  />
+					</div>
+					<div id="txtAppName2TopicTabDiv" class="input-field col s12">
+					Enter App Name/Host 
+						<input type="text" id="txtAppName2Add2Topic"  placeholder="Enter App Name  here..."  />
+					</div>
+					<div id="txtUserId2TopicTabDiv" class="input-field col s12">
+					Enter Browser/Device Name 
+						<input type="text" id="txtdeviceName2Add2Topic"  placeholder="Enter Device Name here..."  />
+					</div>
+				<div  id="txtToken2TopicTabDiv" class="input-field col s12" >
+					Enter Token 
+						<input type="text" id="txtToken2Add2Topic"  placeholder="Enter Token  here..."  />
+				</div>
+					
+					<a class="btn" id="addToken2TopicLink" href="javascript:clsFCMInst.addToken2Topic()">
+						Send 
+					</a>
+		  </div>
+        </li>
         <li>
           <div id="allowNotificationTab"  class="collapsible-header"><i class="material-icons">help_outline</i>Allow Notification?</div>
           <div class="collapsible-body">
@@ -235,31 +318,6 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] !=="")
 			<a class="btn" id="sendToken2ServerLink" href="javascript:clsFCMInst.sendToken2Server()" >
 				Send FCM Token To Server
 			</a>
-		  </div>
-        </li>
-		
-        <li>
-          <div id="sendMessage2TokenTab" class="collapsible-header disabled"><i class="material-icons">devices</i>Send Message to Token</div>
-          <div class="collapsible-body">
-			<span id="sendMessage2TopicDescription" >
-				Firebase cloud Messaging could send message to a particular device.  FCM Token of the machines/browsers/app must be sent along with title and message. 
-			</span>
-				<div  id="enterTokenDiv" >
-					Enter Token 
-						<input type="text" id="txtToken2SendMessage"  placeholder="Enter Token  here..."  />
-				</div>
-					<div class="input-field col s12">
-			
-						Enter Text for  Message 
-						<input type="text" id="txtTitle4TokenMessage"  placeholder="Enter Token Mesage Title here..."  />
-			 
-					</div>
-					<div class="input-field col s12">
-						<textarea id="messageBody4Token" placeholder="Hi , this is message for selected Token"></textarea>
-					</div>
-					<a class="btn" id="sendMessage2TokenLink" href="javascript:clsFCMInst.sendMessage2Token()">
-						Send 
-					</a>
 		  </div>
         </li>
         <li>
